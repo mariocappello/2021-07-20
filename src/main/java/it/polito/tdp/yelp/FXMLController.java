@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.yelp.model.Model;
+import it.polito.tdp.yelp.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,13 +39,13 @@ public class FXMLController {
     private TextField txtX2; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbAnno"
-    private ComboBox<?> cmbAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> cmbAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbUtente"
-    private ComboBox<?> cmbUtente; // Value injected by FXMLLoader
+    private ComboBox<User> cmbUtente; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtX1"
     private TextField txtX1; // Value injected by FXMLLoader
@@ -54,11 +55,56 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	txtResult.clear();
+    	// controlli per numero Intero inserito in Stringa e su valore cmbBox
+    	
+    	String NrecensioniControllo =txtN.getText();
+    	if(NrecensioniControllo==null) {
+    		txtResult.appendText("inserire un valore");
+    		return ;
+    	}
+    	
+    	int Nrecensioni = 0;
+    	try {
+    		Nrecensioni = Integer.parseInt( this.txtN.getText() );
+    	} catch(NumberFormatException e) {
+    		this.txtResult.setText("Carattere invalido! Il valore da inserire deve essere un numero intero!");
+    		return;
+    	}
+    	 if(Nrecensioni<0) {
+    		 this.txtResult.setText("Carattere invalido! Il valore da inserire deve essere un numero intero!");
+    	 }
+    	 
+    	 if(cmbAnno.getValue()==null) {
+    		 txtResult.appendText("Inserire un valore");
+     		return ;
+    	 }
+    	 // fine controlli sui valori
+    	 
+    	 
+    	 int anno = Integer.parseInt(cmbAnno.getValue().toString());
+    	 int recensioni = Integer.parseInt(txtN.getText().toString());
+    	 model.creaGrafo(recensioni , anno);
+    	 
+    	 
+    	 // controlli su grafo e poi stampa
+    	 
+    	 if(model.grafoCreato()==true) {
+    		txtResult.appendText("Grafo creato!"+"\n");
+     		txtResult.appendText("Vertici : " + model.getNumeroVertici()+"\n");
+     		txtResult.appendText("Archi : "+model.getNumeroArchi()+"\n");
+    	 }
+    	 else {
+    		 txtResult.setText("Grafo NON creato!");
+    		 return ;
+    	 }
 
     }
 
     @FXML
     void doUtenteSimile(ActionEvent event) {
+    	
+    	
 
     }
     
@@ -84,5 +130,6 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbAnno.getItems().addAll(2005,2006,2007,2008,2009,2010,2011,2012,2013);
     }
 }
